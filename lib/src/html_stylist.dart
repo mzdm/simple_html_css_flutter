@@ -73,6 +73,11 @@ class HTML {
     // to fix a known issue with non self closing <br> tags
     content = content.replaceAll('<br>', '<br />');
 
+    content = content.replaceAllMapped(
+      RegExp('&(lt|gt|amp|apos|quot);'),
+      (match) => '&amp;${match.group(1)};',
+    );
+
     final Parser parser = Parser(context, HtmlUnescape().convert(content),
         linksCallback: linksCallback,
         overrideStyleMap: overrideStyle ?? <String, TextStyle>{},
