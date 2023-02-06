@@ -143,8 +143,8 @@ class Parser {
   }
 
   /// Converts HTML content to a list of [TextSpan] objects
-  List<TextSpan> parse() {
-    List<TextSpan> spans = <TextSpan>[];
+  List<InlineSpan> parse() {
+    List<InlineSpan> spans = <InlineSpan>[];
     bool isBulletList = false;
     bool isNumericList = false;
     int numericListCounter = 1;
@@ -158,7 +158,21 @@ class Parser {
           isBulletList = true;
         } else if (event.name == 'li') {
           if (isBulletList) {
-            spans.add(TextSpan(text: '• ', style: defaultTextStyle));
+            spans.add(
+              WidgetSpan(
+                child: Container(
+                  width: 7.0,
+                  height: 7.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 2.0,
+                      color: const Color(0xFF65749A),
+                    ),
+                  ),
+                ),
+              ),
+            );
           } else if (isNumericList) {
             spans.add(TextSpan(
                 text: '$numericListCounter. ', style: defaultTextStyle));
@@ -366,10 +380,13 @@ class Parser {
 
     // removing all extra new line textSpans to avoid space at the bottom
     if (spans.isNotEmpty) {
-      final List<TextSpan> reversed = spans.reversed.toList();
+      final List<InlineSpan> reversed = spans.reversed.toList();
 
       while (reversed.isNotEmpty &&
-          (reversed.first.text == '\n\n' || reversed.first.text == '\n')) {
+              ((reversed.first is TextSpan) &&
+                  (reversed.first as TextSpan).text == '\n\n') ||
+          ((reversed.first is TextSpan)
+              && (reversed.first as TextSpan).text == '\n')) {
         reversed.removeAt(0);
       }
 
