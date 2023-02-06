@@ -388,10 +388,10 @@ class Parser {
       final List<InlineSpan> reversed = spans.reversed.toList();
 
       while (reversed.isNotEmpty &&
+          (((reversed.first is TextSpan) &&
+              (reversed.first as TextSpan).text == '\n\n') ||
               ((reversed.first is TextSpan) &&
-                  (reversed.first as TextSpan).text == '\n\n') ||
-          ((reversed.first is TextSpan)
-              && (reversed.first as TextSpan).text == '\n')) {
+                  (reversed.first as TextSpan).text == '\n'))) {
         reversed.removeAt(0);
       }
 
