@@ -170,7 +170,7 @@ class Parser {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        width: 2.0,
+                        width: 1.0,
                         color: const Color(0xff65749A),
                       ),
                     ),
