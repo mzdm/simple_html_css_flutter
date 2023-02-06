@@ -160,14 +160,19 @@ class Parser {
           if (isBulletList) {
             spans.add(
               WidgetSpan(
-                child: Container(
-                  width: 7.0,
-                  height: 7.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 2.0,
-                      color: const Color(0xFF65749A),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: Container(
+                    width: 7.0,
+                    height: 7.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2.0,
+                        color: const Color(0xff65749A),
+                      ),
                     ),
                   ),
                 ),
