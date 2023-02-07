@@ -83,7 +83,7 @@ class HTML {
         overrideStyleMap: overrideStyle ?? <String, TextStyle>{},
         defaultTextStyle: defaultTextStyle);
 
-    List<TextSpan> list = <TextSpan>[];
+    List<InlineSpan> list = <InlineSpan>[];
     try {
       list = parser.parse();
     } catch (error, stackTrace) {

@@ -143,10 +143,54 @@ class Parser {
   }
 
   /// Converts HTML content to a list of [TextSpan] objects
-  List<TextSpan> parse() {
-    List<TextSpan> spans = <TextSpan>[];
+  List<InlineSpan> parse() {
+    List<InlineSpan> spans = <InlineSpan>[];
+    bool isBulletList = false;
+    bool isNumericList = false;
+    int numericListCounter = 1;
+    const itemListSpacer = TextSpan(
+      text: '\n',
+      style: TextStyle(height: 0.75),
+    );
+
     for (final XmlEvent event in _events) {
       if (event is XmlStartElementEvent) {
+        // List tag formatting
+        if (event.name == 'ol') {
+          isNumericList = true;
+        } else if (event.name == 'ul') {
+          isBulletList = true;
+        } else if (event.name == 'li') {
+          if (isBulletList) {
+            spans.add(itemListSpacer);
+            spans.add(
+              WidgetSpan(
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: Container(
+                    width: 7.0,
+                    height: 7.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 1.0,
+                        color: const Color(0xff65749A),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          } else if (isNumericList) {
+            spans.add(itemListSpacer);
+            spans.add(TextSpan(
+                text: '$numericListCounter. ', style: defaultTextStyle));
+            numericListCounter++;
+          }
+        }
+
         if (!event.isSelfClosing) {
           String styles = '';
           final String tagName = event.name.toLowerCase();
@@ -332,14 +376,28 @@ class Parser {
           spans.add(currentSpan);
         }
       }
+
+      // List tag formatting
+      if (event is XmlEndElementEvent) {
+        if (event.name == 'ol') {
+          isNumericList = false;
+          numericListCounter = 1;
+        }
+        if (event.name == 'ul') {
+          isBulletList = false;
+        }
+      }
     }
 
     // removing all extra new line textSpans to avoid space at the bottom
     if (spans.isNotEmpty) {
-      final List<TextSpan> reversed = spans.reversed.toList();
+      final List<InlineSpan> reversed = spans.reversed.toList();
 
       while (reversed.isNotEmpty &&
-          (reversed.first.text == '\n\n' || reversed.first.text == '\n')) {
+          (((reversed.first is TextSpan) &&
+              (reversed.first as TextSpan).text == '\n\n') ||
+              ((reversed.first is TextSpan) &&
+                  (reversed.first as TextSpan).text == '\n'))) {
         reversed.removeAt(0);
       }
 
