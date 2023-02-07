@@ -148,6 +148,10 @@ class Parser {
     bool isBulletList = false;
     bool isNumericList = false;
     int numericListCounter = 1;
+    const itemListSpacer = TextSpan(
+      text: '\n',
+      style: TextStyle(height: 0.75),
+    );
 
     for (final XmlEvent event in _events) {
       if (event is XmlStartElementEvent) {
@@ -158,6 +162,7 @@ class Parser {
           isBulletList = true;
         } else if (event.name == 'li') {
           if (isBulletList) {
+            spans.add(itemListSpacer);
             spans.add(
               WidgetSpan(
                 baseline: TextBaseline.ideographic,
@@ -179,6 +184,7 @@ class Parser {
               ),
             );
           } else if (isNumericList) {
+            spans.add(itemListSpacer);
             spans.add(TextSpan(
                 text: '$numericListCounter. ', style: defaultTextStyle));
             numericListCounter++;
