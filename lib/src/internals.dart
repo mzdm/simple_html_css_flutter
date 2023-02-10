@@ -337,6 +337,19 @@ class Parser {
         } else {
           if (event.name == 'br') {
             spans.add(const TextSpan(text: '\n'));
+          } else if (event.name == 'hr') {
+            spans.add(
+              const WidgetSpan(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Divider(
+                    color: Color(0xffD4DBE7),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                ),
+              ),
+            );
           }
         }
       }
